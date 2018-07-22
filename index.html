@@ -134,8 +134,12 @@
 
 
 
-
+  <script src="azure-storage.table.js"></script/>
   <script>
+
+    // Include azure libraries to access storage
+    //var azure = require('azure-storage');
+
     //play button event
     $('#btnPlay').click(function(event) {
       //play the audio
@@ -161,15 +165,40 @@
     //submit button event
     $('#btnSubmit').click(function(e) {
       e.preventDefault();
-      //check if the user has input fields filled // Input field validation
-
-
+      
+      // Check if the user has input fields filled 
       var json = toJSONString(this.form);
       var output = document.getElementById("output");
       output.innerHTML = json;
       jsonObjects = json.slice(1, -1);
       jData = jsonObjects;
+      jsonObj = JSON.parse(json)
 
+      var task = {
+        PartitionKey: { '_': 'musictests'},
+        RowKey:  { '_': jsonObj['Name'] + uuidv4()},
+        Q1:  { '_': jsonObj['Q1']},
+        Q2:  { '_': jsonObj['Q2']},
+        Q3:  { '_': jsonObj['Q3']},
+      }; 
+
+      // Upload to storage
+      var tableSvc = AzureStorage.Table.createTableService('musiclyricstorage', '3RTAcIprOGSmxQ72sYsSamlbfgMgtCoW5r9uDbHTm3KWJ7agqEtpLsj7PhfbTuuClC78xrMOeN/v/RMPj8E0Hg==');
+      tableSvc.createTableIfNotExists('musicdata', function(error, result, response){
+        if(!error){
+          // Table exists or created, now insert record
+          tableSvc.insertEntity('musicdata', task, function (error, result, response) {
+            if(!error){
+              // Entity inserted
+              window.location.href = 'thanks.html';
+            } else {
+              alert("Error storing record: " + error);
+            }
+          });
+        } else {
+          alert("Error while creating storage table: " + error);
+        }
+      });
     });
 
 
@@ -193,6 +222,14 @@
       return JSON.stringify(obj, null, 4);
     }
     //*****************************JSON Conversion****************************//
+
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+      });
+    }
+
   </script>
 
 
