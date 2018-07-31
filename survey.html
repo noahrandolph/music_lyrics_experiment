@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8" />
+  <title>W241 Experiment</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <!-- jQuery library -->
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <style>
+    #passage_and_questions {
+      display: none;
+    }
+
+    #btnSubmit {
+      display: none
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Berkeley MIDS W241 Project Quiz</h1>
+
+  <!--Audio list
+        can add multiple audio files as well-->
+  <audio id="audio_instrumental">
+        <source src="./audio/instrumental.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio_lyrics">
+    <source src="./audio/lyrics.mp3" type="audio/mpeg">
+</audio>
+  <div class="jumbotron-fluid  align-items-center">
+    <div class="form-group">
+      <button class="btn btn-primary form-group" id="btnPlay">
+                  Play Music and Take Quiz
+              </button>
+    </div>
+  </div>
+  <form id="audioForm" action="#" method="post" class="form-horizontal">
+
+    <div class="form-group">
+      <label class="col-sm-2">Name</label>
+      <div class="col-sm-10">
+        <input type="text" id="name" name="Name" class="form-control" placeholder="Enter your name" />
+      </div>
+    </div>
+
+    <h3>Audio Verification</h3>
+
+    Please click the Play Music and Take Quiz button, and adjust the audio so that you can hear clearly. 
+
+    <h4>Pre-audio check 1</h4>
+    <div class="mob-box">
+      <p><strong>Do you hear a song playing?</strong></p>
+      <p>A. Yes <br/>
+        B. No <br/></p>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2">Select Answer</label>
+      <select name="Check1" class="form-control col-sm-10">
+                    <option value="A" selected="selected">A</option>
+                    <option value="B">B</option>
+                </select>
+    </div>
+
+    <h4>Pre-audio check 2</h4>
+    <div class="mob-box">
+      <p><strong>Is there a piano in the song?</strong></p>
+      <p>A. Yes <br/>
+        B. No <br/></p>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2">Select Answer</label>
+      <select name="Check2" class="form-control col-sm-10">
+                    <option value="A" selected="selected">A</option>
+                    <option value="B">B</option>
+                </select>
+    </div>
+
+    <h3>Reading Comprehension Questions</h3>
+    <div class="mob-box">
+      <p>You will receive $1 per correct response. Each passage is followed by several questions. After reading the passage, choose the best answer to each question based on the content of the passage. Answer all questions following the passage on the basis
+        of what is stated or implied on the passage.</p>
+    </div>
+
+
+    <div class="col-sm-8" id="passage_and_questions">
+
+      <h4>Passage</h4>
+      <div class="mob-box">
+        <p>From an article by Malcom Gladwell entitled, "What the Dog Saw," discussing canine behavior.<br/>
+          A dog cares, deeply, which way your body is leaning. Forward or backward? Forward can be seen as aggressive; backward-even a quarter of an inch-means nonthreatening. It means you've relinquished what ethologists call an "intention movement" to proceed forward. Cock your head, even slightly, to the side, and a dog is disarmed. Look at him straight on and he'll read it like a red flag. Standing straight, with your shoulders squared rather than slumped, can mean the difference between whether your dog obeys a command or ignores it. Breathing evenly and deeply, rather than holding your breath, can mean the difference between diffusing a tense situation and igniting it. "I think they are looking at our eyes and where our eyes are looking, and what our eyes look like," the ethologist Patricia McConnell, who teaches at the University of Wisconsin, Madison, says. "A rounded eye with a dilated pupil is a sign of high arousal and aggression in a dog. I believe they pay a tremendous amount of attention to how relaxed our face is and how relaxed our facial muscles are, because that's a big cue for them with each other. Is the jaw relaxed? Is the mouth slightly open? And then the arms. They pay a tremendous amount of attention to where our arms go." </p>
+      </div>
+      <hr />
+      <h4>Question 1</h4>
+      <div class="mob-box">
+        <p><strong>Based on the context of the passage, which best describes what an "ethologist" studies?</strong></p>
+        <p>A. Muscle and nerve reflexes of humans and animals <br />
+           B. Nonverbal forms of communication between species <br />
+           C. Animal behavior, particularly as it occurs in interactions between species in different environments <br /> 
+           D. Canine anatomy <br /> 
+           E. Character traits among different animal breeds </p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q1" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                  </select>
+      </div>
+      <h4>Question 2</h4>
+      <div class="mob-box">
+        <p><strong>It can be inferred from the passage that</strong></p>
+        <p>A. Dogs are generally indifferent to minor movement shifts in humans.<br /> 
+          B. Dogs are more sensitive to physical cues from arms and legs than from eyes and mouths. <br /> 
+          C. Dogs are highly sensitive to nuances in human movement. <br /> 
+          D. "Intention movements" cannot be retracted once they have been initiated.<br /> 
+          E. Minor movements or changes in posture and expression have no impact on a tense situation between human and dog once it has begun. </p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q2" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                  </select>
+      </div>
+      <h4>Question 3</h4>
+      <div class="mob-box">
+        <p><strong>According to the passage, the following human behaviors could all be perceived by a dog as potentially aggressive or dominant EXCEPT:</strong></p>
+        <p>A. Leaning forward <br /> 
+          B. Even breathing pattern <br /> 
+          C. Unrelaxed facial muscles  <br /> 
+          D. Direct eye contact <br /> 
+          E. Standing straight with unrounded shoulder </p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q3" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                  </select>
+      </div>
+
+      <h4>Question 4</h4>
+      <div class="mob-box">
+        <p><strong>What’s the name of the author of this passage?</strong></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer:</label><input type="text" name="Q4" class="form-control col-sm-10"><br>
+      </div>
+
+      <h3>Survey Taker Questions</h3>
+
+      <h4>Question 5</h4>
+      <div class="mob-box">
+        <p><strong>How many consonants are in the second to last sentence of the passage?</strong></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer:</label><input type="text" name="Q5" class="form-control col-sm-10"><br>
+      </div>
+      <h4>Question 6</h4>
+      <div class="mob-box">
+        <p><strong>What is your age?</strong></p>
+        <p>A. Under 12 years old <br/>
+          B. 12-17 years old <br/>
+          C. 18-24 years old <br/>
+          D. 25-34 years old <br/>
+          E. 35-44 years old <br/>
+          F. 45-54 years old <br/>
+          G. 55-64 years old <br/>
+          H. 65-74 years old <br/>
+          I. 75 years or older <br/>
+          J. Rather not respond </p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q6" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                      <option value="G">G</option>
+                      <option value="H">H</option>
+                      <option value="I">I</option>
+                      <option value="J">J</option>
+                  </select>
+      </div>
+
+      <h4>Question 7</h4>
+      <div class="mob-box">
+        <p><strong>What is your gender?</strong></p>
+        <p>A. Male <br/>
+          B. Female <br/>
+          C. Other <br/>
+          D. Rather not respond  </p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q7" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                  </select>
+      </div>
+
+      <h4>Question 8</h4>
+      <div class="mob-box">
+        <p><strong>Do you own a dog?</strong></p>
+        <p>A. Yes <br/>
+          B. No <br/></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q8" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                  </select>
+      </div>
+
+      <h4>Question 9</h4>
+      <div class="mob-box">
+        <p><strong>Which of these best describes your education level?</strong></p>
+        <p>A. No schooling completed<br/>
+          B. Nursery school to 8th grade <br/>
+          C. Some high school, no diploma <br/>
+          D. High school graduate, diploma or the equivalent (for example: GED)<br/>
+          E. Some college credit, no degree<br/>
+          F. Trade/technical/vocational training<br/>
+          G. Associate degree<br/>
+          H. Bachelor’s degree<br/>
+          I. Master’s degree<br/>
+          J. Doctorate degree</p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q9" class="form-control col-sm-10">
+          <option value="A" selected="selected">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+          <option value="E">E</option>
+          <option value="F">F</option>
+          <option value="G">G</option>
+          <option value="H">H</option>
+          <option value="I">I</option>
+          <option value="J">J</option>
+        </select>
+      </div>
+
+      <h4>Question 10</h4>
+      <div class="mob-box">
+        <p><strong>What’s your occupation?</strong></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer:</label><input type="text" name="Q10" class="form-control col-sm-10"><br>
+      </div>
+      
+      <h4>Question 11</h4>
+      <div class="mob-box">
+        <p><strong>Is English your native language?</strong></p>
+        <p>A. Yes <br/>
+          B. No <br/></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q3" class="form-control col-sm-10">
+          <option value="A" selected="selected">A</option>
+          <option value="B">B</option>
+        </select>
+      </div>  
+      
+      <h4>Question 12</h4>
+      <div class="mob-box">
+        <p><strong>Did the song you heard while answering these questions have lyrics?</strong></p>
+        <p>A. Yes <br/>
+          B. No <br/></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q12" class="form-control col-sm-10">
+                      <option value="A" selected="selected">A</option>
+                      <option value="B">B</option>
+                  </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" id="btnSubmit" onclick="btnSubmit" class="btn btn-success form-group">Submit Answers</button>
+    </div>
+
+    </div>
+  </form>
+  <div class="form-group">
+    <pre id="output"></pre>
+  </div>
+
+  <script src="azure-storage.table.js"></script/>
+  <script>
+
+    // Include azure libraries to access storage
+    //var azure = require('azure-storage');
+    var clickedPlay = false;
+    //play button event
+    $('#btnPlay').click(function(event) {
+      clickedPlay = true;
+      var x = document.getElementById("audioForm");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "block";
+      }
+
+      // Flip coin: lyrics vs instrumental
+      let lyrics = true;
+      if(Math.random() < 0.5) {
+        lyrics = false;
+      } 
+
+      // Play audio
+      if(lyrics == true) {
+        document.getElementById("audio_lyrics").play();
+      }
+      else {
+        document.getElementById("audio_instrumental").play();
+      }
+
+      // Display survey
+      var x = document.getElementById("passage_and_questions");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "block";
+      }
+
+      // Display submit button
+      var x = document.getElementById("btnSubmit");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "block";
+      }
+
+      event.preventDefault();
+    });
+
+    //submit button event
+    $('#btnSubmit').click(function(e) {
+      e.preventDefault();
+      
+      // Check if the user has input fields filled 
+      var json = toJSONString(this.form);
+      var output = document.getElementById("output");
+      output.innerHTML = json;
+      jsonObjects = json.slice(1, -1);
+      jData = jsonObjects;
+      jsonObj = JSON.parse(json)
+
+      var rowKey = jsonObj['Name'] + uuidv4();
+      var task = {
+        PartitionKey: { '_': 'musictests'},
+        RowKey:  { '_': rowKey},
+        Check1:  { '_': jsonObj['Check1']},
+        Check2:  { '_': jsonObj['Check2']},
+        Q1:  { '_': jsonObj['Q1']},
+        Q2:  { '_': jsonObj['Q2']},
+        Q3:  { '_': jsonObj['Q3']},
+        Q4:  { '_': jsonObj['Q4']},
+        Q5:  { '_': jsonObj['Q5']},
+        Q6:  { '_': jsonObj['Q6']},
+        Q7:  { '_': jsonObj['Q7']},
+        Q8:  { '_': jsonObj['Q8']},
+        Q9:  { '_': jsonObj['Q9']},
+        Q10:  { '_': jsonObj['Q10']},
+        Q11:  { '_': jsonObj['Q11']},
+        Q12:  { '_': jsonObj['Q12']},
+        isTurk: { '_': getParameterByName('isturk') },
+        clickedPlay: { '_': clickedPlay }
+      }; 
+
+      // Upload to storage
+      var tableSvc = AzureStorage.Table.createTableService('musiclyricstorage', '3RTAcIprOGSmxQ72sYsSamlbfgMgtCoW5r9uDbHTm3KWJ7agqEtpLsj7PhfbTuuClC78xrMOeN/v/RMPj8E0Hg==');
+      tableSvc.createTableIfNotExists('musicdata', function(error, result, response){
+        if(!error){
+          // Table exists or created, now insert record
+          tableSvc.insertEntity('musicdata', task, function (error, result, response) {
+            if(!error){
+              // Entity inserted
+              window.location.href = 'thanks.html?rowkey=' + rowKey;
+            } else {
+              alert("Error storing record: " + error);
+            }
+          });
+        } else {
+          alert("Error while creating storage table: " + error);
+        }
+      });
+    });
+
+
+    //****************JSON Conversion****************//
+    var jsonObjects;
+    var jData;
+
+    function toJSONString(form) {
+      var obj = {};
+      var elements = form.querySelectorAll("input,select"); // if you have other input types, add em here
+      for (var i = 0; i < elements.length; ++i) {
+        var element = elements[i];
+        var name = element.name;
+        var value = element.value;
+
+        if (name) {
+          obj[name] = value;
+        }
+      }
+
+      return JSON.stringify(obj, null, 4);
+    }
+    //*****************************JSON Conversion****************************//
+
+  function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+      });
+    }
+
+  </script>
+
+
+</body>
+
+</html>

@@ -26,7 +26,31 @@
   <h1>Berkeley MIDS W241 Project Quiz</h1>
 
   <div>Thanks for participating!</div>
+  <div name='surveycode' id='surveycode'></div>
 
+  <script>
+    if (window.addEventListener) { // Mozilla, Netscape, Firefox
+        window.addEventListener('load', WindowLoad, false);
+    } else if (window.attachEvent) { // IE
+        window.attachEvent('onload', WindowLoad);
+    }
+
+    function WindowLoad(event) {
+      var codeDisplay = document.getElementById("surveycode");
+      codeDisplay.textContent = 'Your survey code: ' + getParameterByName('rowkey');
+    }
+    
+
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+  </script>
 
 
 

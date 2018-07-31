@@ -27,104 +27,25 @@
 
   <!--Audio list
         can add multiple audio files as well-->
-  <audio id="audio">
-        <source src="./audio/Spiritus_Sancti.mp3" type="audio/mpeg">
-    </audio>
+  <audio id="audio_instrumental">
+        <source src="./audio/instrumental.mp3" type="audio/mpeg">
+  </audio>
 
   <form id="audioForm" action="#" method="post" class="form-horizontal">
 
-    <div class="form-group">
-      <label class="col-sm-2">Name</label>
-      <div class="col-sm-10">
-        <input type="text" id="name" name="Name" class="form-control" placeholder="Enter your name" />
-      </div>
-    </div>
-
-    <h3>Reading Comprehension Questions</h3>
+    <h3>Audio set up</h3>
     <div class="mob-box">
-      <p>You will receive $1 per correct response. Each passage is followed by several questions. After reading the passage, choose the best answer to each question based on the content of the passage. Answer all questions following the passage on the basis
-        of what is stated or implied on the passage.</p>
+      <p>First, we need you to set up audio. <strong>Please turn on your audio and leave it on for the rest of the survey</strong></p>
     </div>
     <div class="jumbotron-fluid  align-items-center">
       <div class="form-group">
         <button class="btn btn-primary form-group" id="btnPlay">
-                    Play Music and Take Quiz
+                    I've turned on audio: Take survey now
                 </button>
       </div>
     </div>
 
 
-
-    <div class="col-sm-8" id="passage_and_questions">
-
-      <h4>Passage</h4>
-      <div class="mob-box">
-        <p>Although the schooling of fish is familiar form of animal social behaviour, how the school is formed and maintained is only beginning to be understood in detail. It had been thought that each fish maintains its position chiefly by means of vision.
-          Our work as shown that, as each fish maintains its position, the lateral line, an organ sensitive to transitory changes in water displacement, is as important as vision. In each species a fish has a &ldquo;preferred&rdquo; distance and dangle
-          from its nearest neighbor. The ideal separation and bearing, however, are not maintained rigidly. The result is a probabilistic arrangement that appears like a random aggregation. The tendency of the fish to remain at the preferred distance
-          and angle, however, serves to maintain the structure. Each fish, having established its position, uses its eyes and its lateral lines simultaneously to measure the speed of all the other fish in the school. It then adjusts its own speed to match
-          a weighted average that emphasizes the contribution of nearby fish.</p>
-      </div>
-      <hr />
-      <h4>Question 1</h4>
-      <div class="mob-box">
-        <p><strong>According to the passage, the structure of a fish school is dependant upon which of the following:</strong></p>
-        <p><em><strong>I. Rigidly formed random aggregations<br />
-      			II. The tendency of each fish to remain at a preferred distance from neighboring fish<br />
-      			III. Measurement of a&nbsp;</strong><strong>weighed</strong><strong> average by individual fish</strong></em></p>
-        <p>A. II only<br /> B. III only<br /> C. I and II only<br /> D. I and III only<br /> E. II and III only</p>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2">Select Answer</label>
-        <select name="Q1" class="form-control col-sm-10">
-                      <option value="A" selected="selected">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                  </select>
-      </div>
-      <h4>Question 2</h4>
-      <div class="mob-box">
-        <p><strong>Which of the following best describes the author&rsquo;s attitude toward the theory that the structure of fish schools is maintained primarily through vision?</strong></p>
-        <p>A. Heated opposition<br /> B. Careful neutrality<br /> C. Considered dissatisfaction<br /> D. Cautious approval<br /> E. Unqualified enthusiasm</p>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2">Select Answer</label>
-        <select name="Q2" class="form-control col-sm-10">
-                      <option value="A" selected="selected">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                  </select>
-      </div>
-      <h4>Question 3</h4>
-      <div class="mob-box">
-        <p><strong>The passage suggests that, after establishing its position in the school formation, an individual fish will subsequently</strong></p>
-        <p>A. Maintain its preferred position primarily by visual and auditory means<br /> B. Rigorously avoid changes that would interfere with the overall structure of the school<br /> C. Make conscious sensory readjustments to its position within the
-          school
-          <br /> D. Make unexpected shifts in position only if threatened by external danger<br /> E. Surrender its ability to make quick, instinctive judgements</p>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2">Select Answer</label>
-        <select name="Q3" class="form-control col-sm-10">
-                      <option value="A" selected="selected">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                  </select>
-      </div>
-    </div>
-
-
-
-
-
-    <div class="form-group">
-      <button type="submit" id="btnSubmit" onclick="btnSubmit" class="btn btn-success form-group">Submit Answers</button>
-    </div>
 
     </div>
   </form>
@@ -132,104 +53,29 @@
     <pre id="output"></pre>
   </div>
 
-
-
   <script src="azure-storage.table.js"></script/>
   <script>
 
-    // Include azure libraries to access storage
-    //var azure = require('azure-storage');
-
-    //play button event
-    $('#btnPlay').click(function(event) {
-      //play the audio
-      document.getElementById("audio").play();
-
-      var x = document.getElementById("passage_and_questions");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "block";
-      }
-
-      var x = document.getElementById("btnSubmit");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "block";
-      }
-
-      event.preventDefault();
-    });
 
     //submit button event
-    $('#btnSubmit').click(function(e) {
+    $('#btnPlay').click(function(e) {
       e.preventDefault();
+      isTurker = getParameterByName('isturk')
+      window.location.href = 'survey.html?isturk=' + isTurker;
       
-      // Check if the user has input fields filled 
-      var json = toJSONString(this.form);
-      var output = document.getElementById("output");
-      output.innerHTML = json;
-      jsonObjects = json.slice(1, -1);
-      jData = jsonObjects;
-      jsonObj = JSON.parse(json)
-
-      var task = {
-        PartitionKey: { '_': 'musictests'},
-        RowKey:  { '_': jsonObj['Name'] + uuidv4()},
-        Q1:  { '_': jsonObj['Q1']},
-        Q2:  { '_': jsonObj['Q2']},
-        Q3:  { '_': jsonObj['Q3']},
-      }; 
-
-      // Upload to storage
-      var tableSvc = AzureStorage.Table.createTableService('musiclyricstorage', '3RTAcIprOGSmxQ72sYsSamlbfgMgtCoW5r9uDbHTm3KWJ7agqEtpLsj7PhfbTuuClC78xrMOeN/v/RMPj8E0Hg==');
-      tableSvc.createTableIfNotExists('musicdata', function(error, result, response){
-        if(!error){
-          // Table exists or created, now insert record
-          tableSvc.insertEntity('musicdata', task, function (error, result, response) {
-            if(!error){
-              // Entity inserted
-              window.location.href = 'thanks.html';
-            } else {
-              alert("Error storing record: " + error);
-            }
-          });
-        } else {
-          alert("Error while creating storage table: " + error);
-        }
-      });
     });
 
 
-    //****************JSON Conversion****************//
-    var jsonObjects;
-    var jData;
-
-    function toJSONString(form) {
-      var obj = {};
-      var elements = form.querySelectorAll("input,select"); // if you have other input types, add em here
-      for (var i = 0; i < elements.length; ++i) {
-        var element = elements[i];
-        var name = element.name;
-        var value = element.value;
-
-        if (name) {
-          obj[name] = value;
-        }
-      }
-
-      return JSON.stringify(obj, null, 4);
-    }
-    //*****************************JSON Conversion****************************//
-
-    function uuidv4() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-      });
-    }
-
+  function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+   
   </script>
 
 
