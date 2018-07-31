@@ -82,13 +82,10 @@
     </div>
 
     <h3>Reading Comprehension Questions</h3>
-    <div class="mob-box">
-      <p>You will receive $1 per correct response. Each passage is followed by several questions. After reading the passage, choose the best answer to each question based on the content of the passage. Answer all questions following the passage on the basis
-        of what is stated or implied on the passage.</p>
-    </div>
-
 
     <div class="col-sm-8" id="passage_and_questions">
+
+      <div id='turkernotice' display='none'>You will be paid $1 per correct answers for questions 1 through 5.</div>
 
       <h4>Passage</h4>
       <div class="mob-box">
@@ -162,8 +159,6 @@
         <label class="col-sm-2">Select Answer:</label><input type="text" name="Q4" class="form-control col-sm-10"><br>
       </div>
 
-      <h3>Survey Taker Questions</h3>
-
       <h4>Question 5</h4>
       <div class="mob-box">
         <p><strong>How many consonants are in the second to last sentence of the passage?</strong></p>
@@ -171,7 +166,9 @@
       <div class="form-group">
         <label class="col-sm-2">Select Answer:</label><input type="text" name="Q5" class="form-control col-sm-10"><br>
       </div>
-      <h4>Question 6</h4>
+      <h3>Survey Taker Questions</h3>
+
+      <h4>Survey Taker Question 1</h4>
       <div class="mob-box">
         <p><strong>What is your age?</strong></p>
         <p>A. Under 12 years old <br/>
@@ -201,7 +198,7 @@
                   </select>
       </div>
 
-      <h4>Question 7</h4>
+      <h4>Survey Taker Question 2</h4>
       <div class="mob-box">
         <p><strong>What is your gender?</strong></p>
         <p>A. Male <br/>
@@ -219,7 +216,7 @@
                   </select>
       </div>
 
-      <h4>Question 8</h4>
+      <h4>Survey Taker Question 3</h4>
       <div class="mob-box">
         <p><strong>Do you own a dog?</strong></p>
         <p>A. Yes <br/>
@@ -233,7 +230,7 @@
                   </select>
       </div>
 
-      <h4>Question 9</h4>
+      <h4>Survey Taker Question 4</h4>
       <div class="mob-box">
         <p><strong>Which of these best describes your education level?</strong></p>
         <p>A. No schooling completed<br/>
@@ -263,7 +260,7 @@
         </select>
       </div>
 
-      <h4>Question 10</h4>
+      <h4>Survey Taker Question 5</h4>
       <div class="mob-box">
         <p><strong>What’s your occupation?</strong></p>
       </div>
@@ -271,7 +268,7 @@
         <label class="col-sm-2">Select Answer:</label><input type="text" name="Q10" class="form-control col-sm-10"><br>
       </div>
       
-      <h4>Question 11</h4>
+      <h4>Survey Taker Question 6</h4>
       <div class="mob-box">
         <p><strong>Is English your native language?</strong></p>
         <p>A. Yes <br/>
@@ -285,7 +282,7 @@
         </select>
       </div>  
       
-      <h4>Question 12</h4>
+      <h4>Survey Taker Question 7</h4>
       <div class="mob-box">
         <p><strong>Did the song you heard while answering these questions have lyrics?</strong></p>
         <p>A. Yes <br/>
@@ -325,6 +322,16 @@
       } else {
         x.style.display = "block";
       }
+
+      // If it is a turker, also display information about payment per correct answer
+      var isTurk = getParameterByName('isturk');
+      var noticeDiv = document.getElementById("turkernotice");
+      if(isTurk == "true") {
+        noticeDiv.style.display = "block";
+      } else {
+        noticeDiv.style.display = "none";
+      }
+      
 
       // Flip coin: lyrics vs instrumental
       let lyrics = true;
