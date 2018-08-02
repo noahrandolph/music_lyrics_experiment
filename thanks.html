@@ -27,6 +27,8 @@
 
   <div>Thanks for participating!</div>
   <div name='surveycode' id='surveycode'></div>
+  <br/>
+  <div name='correctcount' id='correctcount'></div>
 
   <script>
     if (window.addEventListener) { // Mozilla, Netscape, Firefox
@@ -38,6 +40,9 @@
     function WindowLoad(event) {
       var codeDisplay = document.getElementById("surveycode");
       codeDisplay.textContent = 'Your survey code: ' + getParameterByName('rowkey');
+
+      var corectCount = document.getElementById("correctcount");
+      corectCount.textContent = 'Your Correct question count: ' + getParameterByName('correctcount');
     }
     
 
