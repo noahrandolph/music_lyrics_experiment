@@ -328,6 +328,9 @@
     //var azure = require('azure-storage');
     var clickedPlay = false;
     
+    // Tracks the treatment assignment
+    let lyrics = true;
+
     //play button event
     $('#btnPlay').click(function(event) {
       clickedPlay = true;
@@ -350,7 +353,6 @@
 
 
       // Flip coin: lyrics vs instrumental
-      let lyrics = true;
       if (Math.random() < 0.5) {
         lyrics = false;
       }
@@ -473,6 +475,9 @@
         },
         correctCount: {
           '_': correct
+        },
+        lyrics: {
+          '_': lyrics
         }
       };
 
