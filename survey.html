@@ -27,10 +27,10 @@
 
   <!--Audio list
         can add multiple audio files as well-->
-  <audio id="audio_instrumental">
+  <audio loop id="audio_instrumental">
         <source src="./audio/instrumental.mp3" type="audio/mpeg">
   </audio>
-  <audio id="audio_lyrics">
+  <audio loop id="audio_lyrics">
     <source src="./audio/lyrics.mp3" type="audio/mpeg">
 </audio>
   <div class="jumbotron-fluid  align-items-center">
@@ -333,54 +333,56 @@
 
     //play button event
     $('#btnPlay').click(function(event) {
-      clickedPlay = true;
-      display_c(0);
-      var x = document.getElementById("audioForm");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "block";
+      if(!clickedPlay){
+        clickedPlay = true;
+        display_c(0);
+        var x = document.getElementById("audioForm");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "block";
+        }
+
+        // If it is a turker, also display information about payment per correct answer
+        var isTurk = getParameterByName('isturk');
+        var noticeDiv = document.getElementById("turkernotice");
+        if (isTurk == "true") {
+          noticeDiv.style.display = "block";
+        } else {
+          noticeDiv.style.display = "none";
+        }
+
+
+        // Flip coin: lyrics vs instrumental
+        if (Math.random() < 0.5) {
+          lyrics = false;
+        }
+
+        // Play audio
+        if (lyrics == true) {
+          document.getElementById("audio_lyrics").play();
+        } else {
+          document.getElementById("audio_instrumental").play();
+        }
+
+        // Display survey
+        var x = document.getElementById("passage_and_questions");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "block";
+        }
+
+        // Display submit button
+        var x = document.getElementById("btnSubmit");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "block";
+        }
       }
-
-      // If it is a turker, also display information about payment per correct answer
-      var isTurk = getParameterByName('isturk');
-      var noticeDiv = document.getElementById("turkernotice");
-      if (isTurk == "true") {
-        noticeDiv.style.display = "block";
-      } else {
-        noticeDiv.style.display = "none";
-      }
-
-
-      // Flip coin: lyrics vs instrumental
-      if (Math.random() < 0.5) {
-        lyrics = false;
-      }
-
-      // Play audio
-      if (lyrics == true) {
-        document.getElementById("audio_lyrics").play();
-      } else {
-        document.getElementById("audio_instrumental").play();
-      }
-
-      // Display survey
-      var x = document.getElementById("passage_and_questions");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "block";
-      }
-
-      // Display submit button
-      var x = document.getElementById("btnSubmit");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "block";
-      }
-
       event.preventDefault();
+      
     });
 
     //submit button event
