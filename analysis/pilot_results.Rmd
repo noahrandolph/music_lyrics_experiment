@@ -1,0 +1,121 @@
+---
+title: "Music Lyrics Pilot Data"
+author: "Gurdit Chahal, Adam Letcher, Carlos Castro, Noah Randolph"
+date: "8/4/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(stargazer)
+```
+
+## Results from Pilot Testing of Experiment Site
+
+```{r}
+dt_raw <- fread('pilot_results.csv')
+```
+
+## Cleanup Columns
+
+```{r}
+dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('A', 'B'),
+                                                            labels = c(1, 0)))), 
+                 piano_playing = as.integer(as.character(factor(Check2, 
+                                                                levels = c('A', 'B'), 
+                                                                labels = c(1, 0)))),
+                 q1 = as.factor(Q1), 
+                 q2 = as.factor(Q2), 
+                 q3 = as.factor(Q3),
+                 q4 = as.factor(Q4),
+                 q5 = as.factor(Q5),
+                 age = factor(Q6, levels = c('A', 'B', 'C', 'D', 'E',
+                                             'F', 'G', 'H', 'I', 'J'),
+                              labels = c('<12', '12-17', '18-24', '25-34', '35-44',
+                                         '45-54', '55-64', '65-74', '>75', 'decline')),
+                 gender = factor(Q7, levels = c('A', 'B', 'C', 'D'), 
+                                 labels = c('male', 'female', 'other', 'decline')),
+                 own_dog = as.integer(as.character(factor(Q8, levels = c('A', 'B'), 
+                                                          labels = c(1, 0)))),
+                 education = factor(Q9, levels = c('A', 'B', 'C', 'D', 'E', 
+                                                   'F', 'G', 'H', 'I', 'J'), 
+                                    labels = c('none', '8th grade', 'some high school',
+                                               'high school completed', 'some college', 
+                                               'vocational', 'associates', 'bachelors', 
+                                               'masters', 'doctorate')),
+                 occupation = Q10, 
+                 native_english = as.integer(as.character(factor(Q11, 
+                                                                 levels = c('A', 'B'), 
+                                                                 labels = c(1, 0)))), 
+                 heard_lyrics = as.integer(as.character(factor(Q12, levels = c('A', 'B'),
+                                                               labels = c(1, 0)))),
+                 is_turk = as.integer(as.character(factor(isTurk, 
+                                                          levels = c('true', 'null'),
+                                                          labels = c(1, 0)))),
+                 time, 
+                 correct_count = correctCount, 
+                 assigned_lyrics = as.integer(
+                   as.character(factor(lyrics, levels = c('true', 'false'), 
+                                       labels = c(1, 0)))))]
+```
+
+## EDA
+
+```{r, results='asis'}
+stargazer(dt, header=FALSE, type='latex')
+```
+
+```{r}
+hist(dt[, correct_count])
+```
+
+
+```{r}
+q1_counts <- c(sum(dt[,q1=='A']), sum(dt[,q1=='B']), sum(dt[,q1=='C']),
+               sum(dt[,q1=='D']), sum(dt[,q1=='E']))  
+barplot(q1_counts, main="Question 1",
+  	xlab="Responses")
+```
+```{r}
+q2_counts <- c(sum(dt[,q2=='A']), sum(dt[,q2=='B']), sum(dt[,q2=='C']),
+               sum(dt[,q2=='D']), sum(dt[,q2=='E']))  
+barplot(q2_counts, main="Question 2",
+  	xlab="Responses")
+```
+```{r}
+q3_counts <- c(sum(dt[,q3=='A']), sum(dt[,q3=='B']), sum(dt[,q3=='C']),
+               sum(dt[,q3=='D']), sum(dt[,q3=='E']))  
+barplot(q3_counts, main="Question 3",
+  	xlab="Responses")
+```
+
+
+
+```{r}
+q4_counts <- c(sum(dt[,q4=='A']), sum(dt[,q4=='B']), sum(dt[,q4=='C']),
+               sum(dt[,q4=='D']), sum(dt[,q4=='E']))  
+barplot(q4_counts, main="Question 4",
+  	xlab="Responses")
+```
+
+```{r}
+q5_counts <- c(sum(dt[,q5=='A']), sum(dt[,q5=='B']), sum(dt[,q5=='C']),
+               sum(dt[,q5=='D']), sum(dt[,q5=='E']))  
+barplot(q5_counts, main="Question 5",
+  	xlab="Responses")
+```
+
+
+## Regression
+
+```{r}
+fit_pilot <- lm(correct_count ~ assigned_lyrics, dt)
+summary(fit_pilot)
+```
+
+```{r}
+fit_pilot_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk + time, dt)
+summary(fit_pilot_with_covariates)
+```
+
