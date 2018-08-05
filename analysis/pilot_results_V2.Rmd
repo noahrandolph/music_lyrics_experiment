@@ -132,6 +132,8 @@ summary(fit_pilot)
 ```{r}
 #fit_pilot_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk + time, dt)
 fit_pilot_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk, dt)
+fit_pilot_with_covariates2 <- lm(time ~ assigned_lyrics + age + education + is_turk, dt)
 summary(fit_pilot_with_covariates)
+summary(fit_pilot_with_covariates2)
 ```
 
