@@ -28,5 +28,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### JupyterNotebook ###
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # End of https://www.gitignore.io/api/osx
