@@ -67,7 +67,7 @@
 
     <h4>Pre-audio check 2</h4>
     <div class="mob-box">
-      <p><strong>Is there a piano in the song?</strong></p>
+      <p><strong>If there are lyrics, </strong></p>
       <p>A. Yes <br/> B. No <br/></p>
     </div>
     <div class="form-group">
@@ -274,10 +274,16 @@
 
       <h4>Survey Taker Question 5</h4>
       <div class="mob-box">
-        <p><strong>What’s your occupation?</strong></p>
+        <p><strong>Are you familiar with the song you hear?</strong></p>
+        <p>A. Yes <br/> B. No <br/></p>
       </div>
       <div class="form-group">
-        <label class="col-sm-2">Select Answer:</label><input type="text" name="Q10" class="form-control col-sm-10"><br>
+        <label class="col-sm-2">Select Answer</label>
+        <select name="Q10" class="form-control col-sm-10">
+          <option value="N" selected="selected">Select answer</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+        </select>
       </div>
 
       <h4>Survey Taker Question 6</h4>
@@ -308,6 +314,27 @@
                   </select>
       </div>
     </div>
+
+    <h4>Survey Taker Question 8</h4>
+    <div class="mob-box">
+      <p><strong>If the song you heard during the survey had lyrics, which of the following phrases were there?</strong></p>
+      <p>A. I'm a barbie girl <br/> 
+        B. Rocket man <br/>
+        C. Don't stop believing <br/>
+        D. Hakuna Matata <br/>
+        E. Hear lyrics but unsure about the phrases above <br/>
+        F. Trick question, there were no lyrics! <br/>
+      </p>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2">Select Answer</label>
+      <select name="Q13" class="form-control col-sm-10">
+                    <option value="N" selected="selected">Select answer</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                </select>
+    </div>
+  </div>
 
     <div class="form-group">
       <button type="submit" id="btnSubmit" onclick="btnSubmit" class="btn btn-success form-group">Submit Answers</button>
@@ -465,6 +492,9 @@
         },
         Q12: {
           '_': jsonObj['Q12']
+        },
+        Q13: {
+          '_': jsonObj['Q13']
         },
         isTurk: {
           '_': getParameterByName('isturk')
