@@ -1,8 +1,10 @@
 ---
-title: "Music Lyrics Pilot Data"
+title: "turk_results"
 author: "Gurdit Chahal, Adam Letcher, Carlos Castro, Noah Randolph"
-date: "8/4/2018"
-output: pdf_document
+date: "8/7/2018"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,13 +13,15 @@ library(data.table)
 library(stargazer)
 ```
 
-## Results from Pilot Testing of Experiment Site
+## Load Data
 
-```{r}
-dt_raw <- fread('pilot_results.csv')
+```{r load}
+dt_raw <- fread('musicdata.8.7.2018.csv')
+
+head(dt_raw)
 ```
 
-## Cleanup Columns
+## Clean Up Columns
 
 ```{r}
 dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('A', 'B'),
@@ -48,8 +52,13 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
                  native_english = as.integer(as.character(factor(Q11, 
                                                                  levels = c('A', 'B'), 
                                                                  labels = c(1, 0)))), 
-                 heard_lyrics = as.integer(as.character(factor(Q12, levels = c('A', 'B'),
-                                                               labels = c(1, 0)))),
+                 heard_lyrics = factor(Q13, levels = c('A', 'B', 'C', 'D', 'E', 'F'),
+                                                               labels = c('I\'m a barbie girl', 
+                                                                          'Rocket Man', 
+                                                                          'Don\'t stop believing',
+                                                                          'Hakuna Matata',
+                                                                          'Lyrics but not sure',
+                                                                          'No lyrics')),
                  is_turk = as.integer(as.character(factor(isTurk, 
                                                           levels = c('true', 'null'),
                                                           labels = c(1, 0)))),
@@ -59,80 +68,77 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
                                                             labels = c(1, 0)))))]
 ```
 
+
 ## EDA
 
-```{r, results='asis'}
-stargazer(dt, header=FALSE, type='latex')
-```
-```{r}
-
-```
-
-```{r}
-hist(dt[, correct_count])
-```
-
-
-```{r}
-q1_counts <- c(sum(dt[,q1=='A']), sum(dt[,q1=='B']), sum(dt[,q1=='C']),
-               sum(dt[,q1=='D']), sum(dt[,q1=='E']))  
-barplot(q1_counts, main="Question 1",
-  	xlab="Responses")
-```
-```{r}
-q2_counts <- c(sum(dt[,q2=='A']), sum(dt[,q2=='B']), sum(dt[,q2=='C']),
-               sum(dt[,q2=='D']), sum(dt[,q2=='E']))  
-barplot(q2_counts, main="Question 2",
-  	xlab="Responses")
-```
-```{r}
-q3_counts <- c(sum(dt[,q3=='A']), sum(dt[,q3=='B']), sum(dt[,q3=='C']),
-               sum(dt[,q3=='D']), sum(dt[,q3=='E']))  
-barplot(q3_counts, main="Question 3",
-  	xlab="Responses")
-```
-
-
-
-```{r}
-q4_counts <- c(sum(dt[,q4=='A']), sum(dt[,q4=='B']), sum(dt[,q4=='C']),
-               sum(dt[,q4=='D']), sum(dt[,q4=='E']))  
-barplot(q4_counts, main="Question 4",
-  	xlab="Responses")
-```
-
-```{r}
-q5_counts <- c(sum(dt[,q5=='A']), sum(dt[,q5=='B']), sum(dt[,q5=='C']),
-               sum(dt[,q5=='D']), sum(dt[,q5=='E']))  
-barplot(q5_counts, main="Question 5",
-  	xlab="Responses")
-```
 ```{r}
 summary(dt)
 ```
 
 
+```{r}
+dt[, .N, by = 'assigned_lyrics']
+```
+
+
+
+```{r}
+dt[, .N, by = 'heard_lyrics']
+```
+
+
+```{r}
+dt[, mean(time), by = 'is_turk']
+```
+
+## Covariate Balance Check
+
+```{r}
+dt[, .N, keyby = 'age,assigned_lyrics']
+```
+
+
+```{r}
+# dt[ , t.test(age ~ assigned_lyrics)]
+dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
+dt[ , t.test(native_english ~ assigned_lyrics)]
+dt[ , t.test(is_turk ~ assigned_lyrics)]
+```
+
 ## Regression
 
 ```{r}
-
-#Covariate Balance Check
-# dt[ , t.test(as.numeric(age) ~ assigned_lyrics)]
-# dt[ , chisq.test(as.numeric(education), assigned_lyrics)]
-# dt[ , t.test(native_english ~ assigned_lyrics)]
-# dt[ , t.test(is_turk~assigned_lyrics)]
-
+fit_all <- lm(correct_count ~ assigned_lyrics, dt)
+summary(fit_all)
 ```
 
 
-```{r}
-fit_pilot <- lm(correct_count ~ assigned_lyrics, dt)
-summary(fit_pilot)
-```
 
 ```{r}
-#fit_pilot_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk + time, dt)
-fit_pilot_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk, dt)
-summary(fit_pilot_with_covariates)
+fit_all_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk, dt)
+summary(fit_all_with_covariates)
+```
+
+
+
+```{r}
+fit_turk_only <- lm(correct_count ~ assigned_lyrics, dt[is_turk == 1])
+summary(fit_turk_only)
+```
+
+
+
+```{r}
+fit_no_turks <- lm(correct_count ~ assigned_lyrics, dt[is_turk == 0])
+summary(fit_no_turks)
+```
+
+
+
+```{r}
+dt <- dt[, correct_per_second := correct_count/time]
+
+fit_per_time <- lm(correct_per_second ~ assigned_lyrics, dt)
+summary(fit_per_time)
 ```
 
