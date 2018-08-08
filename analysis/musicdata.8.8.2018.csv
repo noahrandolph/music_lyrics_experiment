@@ -27,6 +27,9 @@ musictests,Alex Hughes461872a6-3aee-4636-9032-934c9243e916,2018-08-07T00:10:23.5
 musictests,Aman Agarwal6eccf68b-0343-43c8-9deb-246536665ffd,2018-08-04T09:23:36.777Z,A,A,C,B,C,D,B,D,A,B,H,Product Manager,A,,null,true,-1002,2,true,A
 musictests,Andrea Nguyenfd5f0dc2-8655-4476-aef5-22fedac9e328,2018-08-06T23:22:06.654Z,A,A,C,B,E,A,D,C,B,B,G,B,A,E,null,true,-409,5,false,
 musictests,Angieda9e4b8d-a838-40aa-981e-c658b7643313,2018-08-07T00:45:49.626Z,A,A,C,B,E,C,B,E,B,B,H,B,A,B,true,true,-251,3,false,
+musictests,Asha Anju21d5524a-9ed9-42e9-8ced-1d714f9899d3,2018-08-07T22:57:20.179Z,A,A,C,C,E,A,A,D,B,B,I,B,B,B,null,true,-568,3,true,
+musictests,Ashley Wells2c6937f9-a267-4dbf-aa9a-d06b9cc9f882,2018-08-08T15:20:13.567Z,A,A,C,B,E,A,E,E,B,A,H,A,A,B,null,true,-389,4,false,
+musictests,Audrey Nguyen086f7d20-abc6-47fb-b96e-921d0921b88a,2018-08-07T21:35:07.271Z,A,A,C,B,E,A,D,D,B,B,G,B,A,B,null,true,-441,5,true,
 musictests,Beth8ee24d02-97e7-4209-92f0-7219976436e4,2018-08-07T00:45:28.323Z,A,A,C,B,E,A,B,E,B,A,I,A,A,B,true,true,-360,4,true,
 musictests,Brendon Campbell37fc812b-42ec-4f9e-b389-9cadfe88d908,2018-08-07T00:26:49.955Z,A,A,C,B,E,C,B,C,A,B,E,B,A,B,true,true,-389,3,true,
 musictests,Briandd94b9cd-43ce-43ab-be0b-3dbd018f8d30,2018-08-07T00:27:37.890Z,A,A,C,C,E,A,A,D,A,B,H,A,A,B,true,true,-525,3,true,
@@ -63,6 +66,7 @@ musictests,James Miller13fb5640-ebbb-4704-aaae-d8dd1e9359b8,2018-08-07T00:36:38.
 musictests,Jeanetta4cf33436-e33d-4251-aba0-08ed2c600bf5,2018-08-07T00:28:39.049Z,A,A,B,A,C,E,E,E,B,A,H,A,A,B,true,true,-483,0,true,
 musictests,Jeff4828d22e-69d4-43f8-94dd-908392eb4787,2018-08-07T00:47:30.597Z,A,A,C,B,E,A,D,F,A,B,E,A,A,B,true,true,-481,5,false,
 musictests,Jessica866d8d37-880c-495e-8293-cf94476d56db,2018-08-07T00:35:10.736Z,A,A,C,B,E,A,D,C,B,B,H,B,A,B,true,true,-199,5,false,
+musictests,Ji Li235c797f-1272-4493-be81-ea287f427a7c,2018-08-07T22:04:11.434Z,A,A,C,B,E,C,D,E,A,B,J,B,B,B,null,true,-1242,4,true,
 musictests,Joe7c5a8131-16b1-4d04-a624-5557666904e3,2018-08-07T00:23:38.794Z,A,A,C,B,E,C,D,D,A,B,I,A,A,B,true,true,-269,4,false,
 musictests,John Bb1d3d3ee-6adf-433f-b936-5fabef97adf5,2018-08-03T02:08:04.526Z,A,A,C,B,C,E,C,F,A,A,I,Caregiver,A,,true,true,-771,2,false,B
 musictests,John7530dd74-7890-4454-bb54-856864a16c28,2018-08-07T00:33:25.961Z,A,A,C,D,E,C,D,D,A,A,E,A,A,B,true,true,-552,3,true,
@@ -86,6 +90,7 @@ musictests,Matteaa01e59-ff1a-445f-be01-383968ed2a14,2018-08-07T00:30:19.830Z,A,A
 musictests,Michael Smithe00ddeca-6a05-4cf5-9e47-e6f4bda3d527,2018-08-07T00:25:02.711Z,A,A,C,C,E,A,A,C,A,A,H,B,A,B,true,true,-359,3,true,
 musictests,Michellebd9f5d27-634b-4ae3-aa1b-6f7b8411bd53,2018-08-07T00:50:38.589Z,A,A,C,B,A,A,D,D,B,A,I,A,A,B,true,true,-471,4,true,
 musictests,Mickya4363f7c-57ce-40a5-a59d-b353aff6952a,2018-08-07T00:37:09.160Z,A,A,C,B,E,E,B,F,B,A,I,A,A,B,true,true,-278,3,true,
+musictests,Mike RIvera e33025eb-d9b3-409f-b7c7-6d2ce0e0ccaf,2018-08-07T17:45:14.031Z,A,A,C,E,A,C,D,D,A,B,J,A,A,B,null,true,-267,2,false,
 musictests,Mike8bfcc1d4-84a6-4a02-a2d8-1f1f0788e12b,2018-08-07T00:29:48.672Z,A,A,C,B,C,C,D,E,A,B,I,A,A,B,true,true,-662,3,true,
 musictests,Neven7b61033c-caf4-4aeb-8e28-d1df16e2f658,2018-08-07T00:31:11.759Z,A,A,C,B,E,A,D,C,A,B,D,A,A,B,true,true,-586,5,true,
 musictests,Nick524b6b62-aa21-4b6f-931a-347c008d96a6,2018-08-07T00:38:49.466Z,A,A,C,B,A,C,D,C,A,B,E,B,A,B,true,true,-497,3,true,
@@ -109,6 +114,7 @@ musictests,Shar9caef6de-f735-4a46-8866-abb42dc12a7f,2018-08-07T00:32:55.200Z,A,A
 musictests,Sofia Hurtado40a6d1e1-f28a-41b6-a814-4cdf0c49486a,2018-08-03T06:03:45.814Z,A,A,C,B,E,A,D,C,B,B,H,Software engineer ,A,,null,true,-506,5,false,B
 musictests,Stephanie3e09e35d-95f5-4397-96fd-a6c0812e13de,2018-08-07T00:39:25.081Z,A,A,C,B,A,E,D,E,B,B,H,B,A,B,true,true,-301,3,false,
 musictests,TW4654f469-f8df-4c66-aecd-3b54e4d798e7,2018-08-07T00:24:03.034Z,A,A,C,B,C,A,D,D,A,A,G,A,A,B,true,true,-268,4,true,
+musictests,Trangf84e196d-9a96-48e6-b86e-cddd275e8601,2018-08-08T03:41:11.773Z,A,A,C,B,E,A,A,D,B,A,H,B,B,B,null,true,-575,4,true,
 musictests,Tylerb2925476-8ab6-4061-883e-2c7b57e585b0,2018-08-07T01:12:22.983Z,A,A,B,C,A,D,A,D,A,A,H,B,A,B,true,true,-733,0,true,
 musictests,Victor Wilson9b08e886-5374-4828-adca-1f749b354153,2018-08-07T16:58:40.806Z,A,A,C,B,E,A,D,E,A,A,H,A,A,B,null,true,-440,5,true,
 musictests,Warren25b4b8b5-b881-45e9-ac1c-60ac86056566,2018-08-07T00:23:46.022Z,A,A,C,B,E,E,D,E,A,A,H,B,A,B,true,true,-292,4,false,

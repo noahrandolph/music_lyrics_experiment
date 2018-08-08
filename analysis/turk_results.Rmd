@@ -16,7 +16,7 @@ library(stargazer)
 ## Load Data
 
 ```{r load}
-dt_raw <- fread('musicdata.8.7.2018.csv')
+dt_raw <- fread('musicdata.8.8.2018.csv')
 
 head(dt_raw)
 ```
@@ -62,7 +62,7 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
                  is_turk = as.integer(as.character(factor(isTurk, 
                                                           levels = c('true', 'null'),
                                                           labels = c(1, 0)))),
-                 time, 
+                 time = time * -1, 
                  correct_count = correctCount, 
                  assigned_lyrics = as.integer(as.character(factor(lyrics, levels = c('true', 'false'),
                                                             labels = c(1, 0)))))]
@@ -76,30 +76,48 @@ summary(dt)
 ```
 
 
+Roughly 50/50 split for treatment vs. control:
 ```{r}
 dt[, .N, by = 'assigned_lyrics']
 ```
 
 
-
+Most people recognized the song regardless of being assigned lyrics:
 ```{r}
-dt[, .N, by = 'heard_lyrics']
+dt[, .N, by = 'heard_lyrics,assigned_lyrics']
 ```
 
 
+Turkers took roughly 40% less time to complete the survey than non-turkers:
 ```{r}
 dt[, mean(time), by = 'is_turk']
+
+dt[ , t.test(time ~ is_turk)]
 ```
+
+
+No significant difference in time taken based on treatment vs. control assignment:
+```{r}
+dt[, mean(time), by = 'assigned_lyrics']
+
+dt[ , t.test(time ~ assigned_lyrics)]
+```
+
 
 ## Covariate Balance Check
 
 ```{r}
-dt[, .N, keyby = 'age,assigned_lyrics']
+assignment_by_age <- table(dt$assigned_lyrics, dt$age)
+barplot(assignment_by_age, main = 'Treatment Assignment by Age',
+        xlab = "Age Range", col = c('darkblue', 'red'),
+        legend = c('no lyrics', 'lyrics'))
+
+# dt[, .N, keyby = 'age,assigned_lyrics']
 ```
 
 
 ```{r}
-# dt[ , t.test(age ~ assigned_lyrics)]
+dt[ , chisq.test(assigned_lyrics, age, simulate.p.value = TRUE)]
 dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
 dt[ , t.test(native_english ~ assigned_lyrics)]
 dt[ , t.test(is_turk ~ assigned_lyrics)]
@@ -107,13 +125,15 @@ dt[ , t.test(is_turk ~ assigned_lyrics)]
 
 ## Regression
 
+
+No significant difference in scores between treatment and control groups:
 ```{r}
 fit_all <- lm(correct_count ~ assigned_lyrics, dt)
 summary(fit_all)
 ```
 
 
-
+The only significant difference found is that Turkers scored roughly 0.90 out of 5 lower on average:
 ```{r}
 fit_all_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk, dt)
 summary(fit_all_with_covariates)
