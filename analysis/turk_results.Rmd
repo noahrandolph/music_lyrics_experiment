@@ -117,6 +117,21 @@ barplot(assignment_by_age, main = 'Treatment Assignment by Age',
 
 
 ```{r}
+assignment_by_education <- table(dt$assigned_lyrics, dt$education)
+x <- barplot(assignment_by_education, main = 'Treatment Assignment by Education',
+        col = c('green', 'orange'),
+        legend = c('no lyrics', 'lyrics'), xaxt="n")
+labs <- names(table(dt$education))
+text(cex=1, x=x, y=-2, labs, xpd=TRUE, srt=30, adj = 1)
+
+# x <- barplot(table(mtcars$cyl), xaxt="n")
+# labs <- paste(names(table(mtcars$cyl)), "cylinders")
+# text(cex=1, x=x-.25, y=-1.25, labs, xpd=TRUE, srt=45)
+```
+
+
+
+```{r}
 dt[ , chisq.test(assigned_lyrics, age, simulate.p.value = TRUE)]
 dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
 dt[ , t.test(native_english ~ assigned_lyrics)]
@@ -162,3 +177,32 @@ fit_per_time <- lm(correct_per_second ~ assigned_lyrics, dt)
 summary(fit_per_time)
 ```
 
+
+## Power Calculation
+
+```{r}
+# Calculating number of subjects needed for 80% power
+
+cohens_d <- function(x, y) {
+    lx <- length(x)- 1
+    ly <- length(y)- 1
+    md  <- abs(mean(x) - mean(y))        ## mean difference (numerator)
+    csd <- lx * var(x) + ly * var(y)
+    csd <- csd/(lx + ly)
+    csd <- sqrt(csd)                     ## common sd computation
+    
+    cd  <- md/csd                        ## cohen's d
+}
+
+(effect_size <- cohens_d(dt[assigned_lyrics==1, time], dt[assigned_lyrics==0, time]))
+
+pwr.t.test(power = 0.8, d = effect_size, sig.level = 0.05, type = "two.sample")
+```
+
+
+
+```{r}
+# Calculating what power we got for our experiment
+
+pwr.t2n.test(n1 = 74, n2 = 67, d = effect_size, sig.level = 0.05)
+```

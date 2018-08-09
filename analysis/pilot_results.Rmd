@@ -9,6 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 library(data.table)
 library(stargazer)
+library(pwr)
 ```
 
 ## Results from Pilot Testing of Experiment Site
@@ -53,7 +54,7 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
                  is_turk = as.integer(as.character(factor(isTurk, 
                                                           levels = c('true', 'null'),
                                                           labels = c(1, 0)))),
-                 time, 
+                 time = -1 * time, 
                  correct_count = correctCount, 
                  assigned_lyrics = as.integer(as.character(factor(lyrics, levels = c('true', 'false'),
                                                             labels = c(1, 0)))))]
@@ -63,9 +64,6 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
 
 ```{r, results='asis'}
 stargazer(dt, header=FALSE, type='latex')
-```
-```{r}
-
 ```
 
 ```{r}
@@ -115,13 +113,11 @@ summary(dt)
 ## Regression
 
 ```{r}
-
 #Covariate Balance Check
 # dt[ , t.test(as.numeric(age) ~ assigned_lyrics)]
 # dt[ , chisq.test(as.numeric(education), assigned_lyrics)]
 # dt[ , t.test(native_english ~ assigned_lyrics)]
 # dt[ , t.test(is_turk~assigned_lyrics)]
-
 ```
 
 
@@ -136,3 +132,34 @@ fit_pilot_with_covariates <- lm(correct_count ~ assigned_lyrics + age + educatio
 summary(fit_pilot_with_covariates)
 ```
 
+
+## Power Calculation
+
+Determine what the effect size should be OR use the effect size from the pilot experiment (0.28/5 questions = 0.056):
+```{r}
+cohen.ES(test = 't', size = 'small')
+```
+
+
+```{r}
+pwr.t.test(power = 0.8, d = 0.2, sig.level = 0.05, type = "two.sample", alternative = "greater")
+```
+
+
+
+```{r}
+cohens_d <- function(x, y) {
+    lx <- length(x)- 1
+    ly <- length(y)- 1
+    md  <- abs(mean(x) - mean(y))        ## mean difference (numerator)
+    csd <- lx * var(x) + ly * var(y)
+    csd <- csd/(lx + ly)
+    csd <- sqrt(csd)                     ## common sd computation
+    
+    cd  <- md/csd                        ## cohen's d
+}
+
+(effect_size <- cohens_d(dt[assigned_lyrics==1, time], dt[assigned_lyrics==0, time]))
+
+pwr.t.test(power = 0.8, d = effect_size, sig.level = 0.05, type = "two.sample")
+```
