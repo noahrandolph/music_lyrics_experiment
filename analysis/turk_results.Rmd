@@ -66,7 +66,8 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
                  time = time * -1, 
                  correct_count = correctCount, 
                  assigned_lyrics = as.integer(as.character(factor(lyrics, levels = c('true', 'false'),
-                                                            labels = c(1, 0)))))]
+                                                            labels = c(1, 0)))),
+                 lyrics_factor = factor(lyrics, levels = c('true', 'false'), labels = c("no lyrics", "lyrics")))]
 ```
 
 
@@ -108,26 +109,47 @@ dt[ , t.test(time ~ assigned_lyrics)]
 ## Covariate Balance Check
 
 ```{r}
-assignment_by_age <- table(dt$assigned_lyrics, dt$age)
-barplot(assignment_by_age, main = 'Treatment Assignment by Age',
-        xlab = "Age Range", col = c('darkblue', 'red'),
-        legend = c('no lyrics', 'lyrics'))
-
-# dt[, .N, keyby = 'age,assigned_lyrics']
+table(dt$assigned_lyrics, dt$age)
 ```
 
 
 ```{r}
-assignment_by_education <- table(dt$assigned_lyrics, dt$education)
-x <- barplot(assignment_by_education, main = 'Treatment Assignment by Education',
-        col = c('green', 'orange'),
-        legend = c('no lyrics', 'lyrics'), xaxt="n")
-labs <- names(table(dt$education))
-text(cex=1, x=x, y=-2, labs, xpd=TRUE, srt=30, adj = 1)
+# assignment_by_age <- table(dt$assigned_lyrics, dt$age)
+# barplot(assignment_by_age, main = 'Treatment Assignment by Age',
+#         xlab = "Age Range", col = c('darkblue', 'red'),
+#         legend = c('no lyrics', 'lyrics'))
 
-# x <- barplot(table(mtcars$cyl), xaxt="n")
-# labs <- paste(names(table(mtcars$cyl)), "cylinders")
-# text(cex=1, x=x-.25, y=-1.25, labs, xpd=TRUE, srt=45)
+# dt[, .N, keyby = 'age,assigned_lyrics']
+
+ggplot(data = dt, aes(x = age, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Treatment Assignment by Age",
+    x = "age range",
+    y = "count"
+    )
+ggsave("treatment_by_age.png")
+```
+
+```{r}
+table(dt$assigned_lyrics, dt$education)
+```
+
+
+```{r}
+ggplot(data = dt, aes(x = education, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Treatment Assignment by Education",
+    x = "education level",
+    y = "count"
+    ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+ggsave("treatment_by_education.png")
 ```
 
 
@@ -138,6 +160,67 @@ dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
 dt[ , t.test(native_english ~ assigned_lyrics)]
 dt[ , t.test(is_turk ~ assigned_lyrics)]
 ```
+
+
+## Results
+```{r}
+# correct_count_by_assignment <- table(dt$assigned_lyrics, dt$correct_count)
+# x <- barplot(correct_count_by_assignment, main = 'Correct Count by Treatment Assignment',
+#         col = c('orange', 'purple'), beside = TRUE, space = c(0, 0.2),
+#         legend = c('no lyrics', 'lyrics'), args.legend = c(xjust = 5))
+
+# ggplot(data = dt, aes(x = correct_count, group = lyrics_factor, fill = lyrics_factor)) + 
+#   geom_bar(position = "dodge") + 
+#   theme_bw() +
+#   guides(fill=guide_legend(title="assignment")) +
+#   labs(
+#     title = "Correct Answers by Treatment Assignment",
+#     x = "number of correct answers",
+#     y = "count"
+#     )
+
+ggplot(data = dt, aes(x = lyrics_factor, y = correct_count, 
+                      group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_jitter(width = .05, alpha = .4) +
+  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75) +
+  guides(fill = "none") +
+    theme_bw() +
+    labs(
+      title = "Correct Answer Distributions",
+      x = "treatment assignment",
+      y = "number of correct answers"
+    )
+ggsave("answers_individual_values.png", width = 3)
+```
+
+
+```{r}
+# ggplot(data = dt, aes(x = lyrics_factor, y = time, group = lyrics_factor, fill = lyrics_factor)) + 
+#   geom_boxplot(alpha = .7, varwidth = TRUE) + 
+#   geom_jitter(width = .05, alpha = .4) +
+#   guides(fill = "none") +
+#     theme_bw() +
+#     labs(
+#       title = "Time Distributions Under Treatment and Control",
+#       x = "treatment assignment",
+#       y = "seconds to complete quiz/survey"
+#     )
+# ggsave("time_individual_values.png")
+
+ggplot(data = dt, aes(x = lyrics_factor, y = time, 
+                      group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_jitter(width = .05, alpha = .4) +
+  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75) +
+  guides(fill = "none") +
+    theme_bw() +
+    labs(
+      title = "Time Distributions",
+      x = "treatment assignment",
+      y = "seconds to complete quiz/survey"
+    )
+ggsave("time_individual_values.png", width = 3)
+```
+
 
 ## Regression
 
