@@ -13,12 +13,13 @@ library(data.table)
 library(stargazer)
 library(pwr)
 library(ggplot2)
+library(sandwich)
 ```
 
 ## Load Data
 
 ```{r load}
-dt_raw <- fread('musicdata.8.8.2018.csv')
+dt_raw <- fread('musicdata.8.11.2018.csv')
 
 head(dt_raw)
 ```
@@ -247,38 +248,80 @@ ggsave("time_individual_values.png", width = 3)
 
 No significant difference in scores between treatment and control groups:
 ```{r}
-fit_all <- lm(correct_count ~ assigned_lyrics, dt)
-summary(fit_all)
+fit_simple <- lm(correct_count ~ assigned_lyrics, dt)
+cov_simple <- vcovHC(fit_simple, type = 'HC')
+robust.se_simple <- sqrt(diag(cov_simple))
+```
+
+With covariates
+```{r}
+fit_with_covariates <- lm(correct_count ~ assigned_lyrics + gender + native_english + own_dog + is_turk, dt)
+cov_with_covariates <- vcovHC(fit_with_covariates, type = 'HC')
+robust.se_with_covariates <- sqrt(diag(cov_with_covariates))
 ```
 
 
-The only significant difference found is that Turkers scored roughly 0.90 out of 5 lower on average:
+```{r, results='asis'}
+stargazer(fit_simple, fit_with_covariates, 
+          se=list(robust.se_simple, robust.se_with_covariates),
+          dep.var.labels=c("correct answer count"),
+          covariate.labels=c("assigned lyrics","female", "native english speaker","owns dog","mechanical turk"),
+          keep.stat="n")
+```
+
 ```{r}
-fit_all_with_covariates <- lm(correct_count ~ assigned_lyrics + age + education + is_turk, dt)
-summary(fit_all_with_covariates)
+fit_with_education <- lm(correct_count ~ assigned_lyrics + education, dt)
+cov_with_education <- vcovHC(fit_with_education, type = 'HC')
+robust.se_with_education <- sqrt(diag(cov_with_education))
+```
+
+```{r, results='asis'}
+stargazer(fit_with_education,
+          se=list(robust.se_with_education), 
+          dep.var.labels=c("correct answer count"),
+          covariate.labels=c("assigned lyrics","some high school", "high school completed","some college",
+                             "vocational", "associate", "bachelor", "master", "doctorate"),
+          keep.stat="n")
 ```
 
 
-
-```{r}
-fit_turk_only <- lm(correct_count ~ assigned_lyrics, dt[is_turk == 1])
-summary(fit_turk_only)
+```{r, results='asis'}
+fit_with_age <- lm(correct_count ~ assigned_lyrics + age, dt)
+cov_with_age <- vcovHC(fit_with_age, type = 'HC')
+robust.se_with_age <- sqrt(diag(cov_with_age))
 ```
 
-
-
-```{r}
-fit_no_turks <- lm(correct_count ~ assigned_lyrics, dt[is_turk == 0])
-summary(fit_no_turks)
+```{r, results='asis'}
+stargazer(fit_with_age,
+          se=list(robust.se_with_age),
+          dep.var.labels=c("correct answer count"),
+          covariate.labels=c("assigned lyrics","ages 18-24", "ages 25-34","ages 35-44",
+                             "ages 45-54", "ages 55-64", "ages 65-74"),
+          keep.stat="n")
 ```
 
-
+## Regression with elapsed time as outcome
 
 ```{r}
-dt <- dt[, correct_per_second := correct_count/time]
+fit_time <- lm(time ~ assigned_lyrics, dt)
+cov_time <- vcovHC(fit_time, type = 'HC')
+robust.se_time <- sqrt(diag(cov_time))
+```
 
-fit_per_time <- lm(correct_per_second ~ assigned_lyrics, dt)
-summary(fit_per_time)
+With covariates
+```{r}
+fit_time_with_covariates <- lm(time ~ assigned_lyrics + gender + native_english + own_dog + is_turk, dt)
+cov_time_with_covariates <- vcovHC(fit_time_with_covariates, type = 'HC')
+robust.se_time_with_covariates <- sqrt(diag(cov_time_with_covariates))
+```
+
+```{r, results='asis'}
+stargazer(fit_time, fit_time_with_covariates,
+          se=list(robust.se_time, robust.se_time_with_covariates),
+          dep.var.labels=c("time to complete (seconds)"),
+          covariate.labels=c("assigned lyrics","female", "native english speaker","owns dog",
+                             "mechanical turk"),
+          keep.stat="n")
 ```
 
 
