@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(data.table)
 library(stargazer)
 library(pwr)
+library(ggplot2)
 ```
 
 ## Load Data
@@ -67,7 +68,7 @@ dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('
                  correct_count = correctCount, 
                  assigned_lyrics = as.integer(as.character(factor(lyrics, levels = c('true', 'false'),
                                                             labels = c(1, 0)))),
-                 lyrics_factor = factor(lyrics, levels = c('true', 'false'), labels = c("no lyrics", "lyrics")))]
+                 lyrics_factor = factor(lyrics, levels = c('true', 'false'), labels = c("lyrics", "no lyrics")))]
 ```
 
 
@@ -78,9 +79,26 @@ summary(dt)
 ```
 
 
-Roughly 50/50 split for treatment vs. control:
+```{r, results='asis'}
+stargazer(dt, header=FALSE, type='latex')
+```
+
+
+
+Gender counts of treatment and control:
 ```{r}
-dt[, .N, by = 'assigned_lyrics']
+dt[, .N, by = 'assigned_lyrics,gender']
+
+ggplot(data = dt, aes(x = gender, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Treatment Assignment by Gender",
+    x = "gender",
+    y = "count"
+    )
+ggsave("gender_treatment_assignment.png")
 ```
 
 
@@ -154,6 +172,8 @@ ggsave("treatment_by_education.png")
 
 
 
+
+
 ```{r}
 dt[ , chisq.test(assigned_lyrics, age, simulate.p.value = TRUE)]
 dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
@@ -182,7 +202,7 @@ dt[ , t.test(is_turk ~ assigned_lyrics)]
 ggplot(data = dt, aes(x = lyrics_factor, y = correct_count, 
                       group = lyrics_factor, fill = lyrics_factor)) + 
   geom_jitter(width = .05, alpha = .4) +
-  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75) +
+  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75, fun.args = 1) +
   guides(fill = "none") +
     theme_bw() +
     labs(
@@ -210,7 +230,7 @@ ggsave("answers_individual_values.png", width = 3)
 ggplot(data = dt, aes(x = lyrics_factor, y = time, 
                       group = lyrics_factor, fill = lyrics_factor)) + 
   geom_jitter(width = .05, alpha = .4) +
-  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75) +
+  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75, fun.args = 1) +
   guides(fill = "none") +
     theme_bw() +
     labs(
