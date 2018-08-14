@@ -1,0 +1,385 @@
+---
+title: "turk_results"
+author: "Gurdit Chahal, Adam Letcher, Carlos Castro, Noah Randolph"
+date: "8/7/2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(stargazer)
+library(pwr)
+library(ggplot2)
+library(sandwich)
+library(AER)
+```
+
+## Load Data
+
+```{r load}
+dt_raw <- fread('musicdata.8.11.2018.csv')
+
+head(dt_raw)
+```
+
+## Clean Up Columns
+
+```{r}
+dt <- dt_raw[, .(hear_song = as.integer(as.character(factor(Check1, levels = c('A', 'B'),
+                                                            labels = c(1, 0)))), 
+                 piano_playing = as.integer(as.character(factor(Check2, 
+                                                                levels = c('A', 'B'), 
+                                                                labels = c(1, 0)))),
+                 q1 = as.factor(Q1), 
+                 q2 = as.factor(Q2), 
+                 q3 = as.factor(Q3),
+                 q4 = as.factor(Q4),
+                 q5 = as.factor(Q5),
+                 age = factor(Q6, levels = c('A', 'B', 'C', 'D', 'E',
+                                             'F', 'G', 'H', 'I', 'J'),
+                              labels = c('<12', '12-17', '18-24', '25-34', '35-44',
+                                         '45-54', '55-64', '65-74', '>75', 'decline')),
+                 gender = factor(Q7, levels = c('A', 'B', 'C', 'D'), 
+                                 labels = c('male', 'female', 'other', 'decline')),
+                 own_dog = as.integer(as.character(factor(Q8, levels = c('A', 'B'), 
+                                                          labels = c(1, 0)))),
+                 education = factor(Q9, levels = c('A', 'B', 'C', 'D', 'E', 
+                                                   'F', 'G', 'H', 'I', 'J'), 
+                                    labels = c('none', '8th grade', 'some high school',
+                                               'high school completed', 'some college', 
+                                               'vocational', 'associates', 'bachelors', 
+                                               'masters', 'doctorate')),
+                 occupation = Q10, 
+                 native_english = as.integer(as.character(factor(Q11, 
+                                                                 levels = c('A', 'B'), 
+                                                                 labels = c(1, 0)))), 
+                 heard_lyrics = factor(Q13, levels = c('A', 'B', 'C', 'D', 'E', 'F'),
+                                                               labels = c('I\'m a barbie girl', 
+                                                                          'Rocket Man', 
+                                                                          'Don\'t stop believing',
+                                                                          'Hakuna Matata',
+                                                                          'Lyrics but not sure',
+                                                                          'No lyrics')),
+                 is_turk = as.integer(as.character(factor(isTurk, 
+                                                          levels = c('true', 'null'),
+                                                          labels = c(1, 0)))),
+                 time = time * -1, 
+                 correct_count = correctCount, 
+                 assigned_lyrics = as.numeric(lyrics),
+                 lyrics_factor = factor(lyrics))]
+```
+
+
+## EDA
+
+```{r}
+summary(dt)
+```
+
+
+```{r, results='asis'}
+stargazer(dt, header=FALSE,type='text')
+```
+
+
+
+Gender counts of treatment and control:
+```{r}
+dt[, .N, by = 'assigned_lyrics,gender']
+
+ggplot(data = dt, aes(x = gender, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Treatment Assignment by Gender",
+    x = "gender",
+    y = "count"
+    )
+ggsave("gender_treatment_assignment.png")
+```
+
+
+Most people recognized the song regardless of being assigned lyrics:
+```{r}
+dt[, .N, by = 'heard_lyrics,assigned_lyrics']
+```
+
+Turkers took roughly 40% less time to complete the survey than non-turkers:
+```{r}
+dt[, mean(time), by = 'is_turk']
+
+dt[ , t.test(time ~ is_turk)]
+```
+
+
+No significant difference in time taken based on treatment vs. control assignment:
+```{r}
+dt[, mean(time), by = 'assigned_lyrics']
+
+dt[ , t.test(time ~ assigned_lyrics)]
+```
+
+
+## Covariate Balance Check
+
+```{r}
+table(dt$assigned_lyrics, dt$age)
+```
+
+
+```{r}
+# assignment_by_age <- table(dt$assigned_lyrics, dt$age)
+# barplot(assignment_by_age, main = 'Treatment Assignment by Age',
+#         xlab = "Age Range", col = c('darkblue', 'red'),
+#         legend = c('no lyrics', 'lyrics'))
+
+# dt[, .N, keyby = 'age,assigned_lyrics']
+
+ggplot(data = dt, aes(x = age, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Treatment Assignment by Age",
+    x = "age range",
+    y = "count"
+    )
+ggsave("treatment_by_age.png")
+```
+
+```{r}
+table(dt$assigned_lyrics, dt$education)
+```
+
+
+```{r}
+ggplot(data = dt, aes(x = education, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Treatment Assignment by Education",
+    x = "education level",
+    y = "count"
+    ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+ggsave("treatment_by_education.png")
+```
+
+
+
+
+
+```{r}
+dt[ , chisq.test(assigned_lyrics, age, simulate.p.value = TRUE)]
+dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
+dt[ , t.test(native_english ~ assigned_lyrics)]
+dt[ , t.test(is_turk ~ assigned_lyrics)]
+```
+
+
+## Results
+```{r}
+# correct_count_by_assignment <- table(dt$assigned_lyrics, dt$correct_count)
+# x <- barplot(correct_count_by_assignment, main = 'Correct Count by Treatment Assignment',
+#         col = c('orange', 'purple'), beside = TRUE, space = c(0, 0.2),
+#         legend = c('no lyrics', 'lyrics'), args.legend = c(xjust = 5))
+
+# ggplot(data = dt, aes(x = correct_count, group = lyrics_factor, fill = lyrics_factor)) + 
+#   geom_bar(position = "dodge") + 
+#   theme_bw() +
+#   guides(fill=guide_legend(title="assignment")) +
+#   labs(
+#     title = "Correct Answers by Treatment Assignment",
+#     x = "number of correct answers",
+#     y = "count"
+#     )
+
+ggplot(data = dt, aes(x = lyrics_factor, y = correct_count, 
+                      group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_jitter(width = .05, alpha = .4) +
+  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75, fun.args = 1) +
+  guides(fill = "none") +
+    theme_bw() +
+    labs(
+      title = "Correct Answer Distributions",
+      x = "treatment assignment",
+      y = "number of correct answers"
+    )
+ggsave("answers_individual_values.png", width = 3)
+```
+
+
+```{r}
+# ggplot(data = dt, aes(x = lyrics_factor, y = time, group = lyrics_factor, fill = lyrics_factor)) + 
+#   geom_boxplot(alpha = .7, varwidth = TRUE) + 
+#   geom_jitter(width = .05, alpha = .4) +
+#   guides(fill = "none") +
+#     theme_bw() +
+#     labs(
+#       title = "Time Distributions Under Treatment and Control",
+#       x = "treatment assignment",
+#       y = "seconds to complete quiz/survey"
+#     )
+# ggsave("time_individual_values.png")
+
+ggplot(data = dt, aes(x = lyrics_factor, y = time, 
+                      group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_jitter(width = .05, alpha = .4) +
+  stat_summary(fun.data="mean_sdl", colour = 'red', size = .75, fun.args = 1) +
+  guides(fill = "none") +
+    theme_bw() +
+    labs(
+      title = "Time Distributions",
+      x = "treatment assignment",
+      y = "seconds to complete quiz/survey"
+    )
+ggsave("time_individual_values.png", width = 3)
+```
+
+
+## Regression
+
+
+No significant difference in scores between treatment and control groups:
+```{r}
+fit_simple <- lm(correct_count ~ assigned_lyrics, dt)
+cov_simple <- vcovHC(fit_simple, type = 'HC')
+robust.se_simple <- sqrt(diag(cov_simple))
+```
+
+With covariates
+```{r}
+fit_with_covariates <- lm(correct_count ~ assigned_lyrics + gender + native_english + own_dog + is_turk, dt)
+cov_with_covariates <- vcovHC(fit_with_covariates, type = 'HC')
+robust.se_with_covariates <- sqrt(diag(cov_with_covariates))
+```
+
+
+```{r, results='asis'}
+stargazer(fit_simple, fit_with_covariates, 
+          se=list(robust.se_simple, robust.se_with_covariates),
+          dep.var.labels=c("correct answer count"),
+          covariate.labels=c("assigned lyrics","female", "native english speaker","owns dog","mechanical turk"),
+          keep.stat="n",type='text')
+```
+
+```{r}
+fit_with_education <- lm(correct_count ~ assigned_lyrics + education, dt)
+cov_with_education <- vcovHC(fit_with_education, type = 'HC')
+robust.se_with_education <- sqrt(diag(cov_with_education))
+```
+
+```{r, results='asis'}
+stargazer(fit_with_education,
+          se=list(robust.se_with_education), 
+          dep.var.labels=c("correct answer count"),
+          covariate.labels=c("assigned lyrics","some high school", "high school completed","some college",
+                             "vocational", "associate", "bachelor", "master", "doctorate"),
+          keep.stat="n")
+```
+
+
+```{r, results='asis'}
+fit_with_age <- lm(correct_count ~ assigned_lyrics + age, dt)
+cov_with_age <- vcovHC(fit_with_age, type = 'HC')
+robust.se_with_age <- sqrt(diag(cov_with_age))
+```
+
+```{r, results='asis'}
+stargazer(fit_with_age,
+          se=list(robust.se_with_age),
+          dep.var.labels=c("correct answer count"),
+          covariate.labels=c("assigned lyrics","ages 18-24", "ages 25-34","ages 35-44",
+                             "ages 45-54", "ages 55-64", "ages 65-74"),
+          keep.stat="n")
+```
+
+## Regression with elapsed time as outcome
+
+```{r}
+fit_time <- lm(time ~ assigned_lyrics, dt)
+cov_time <- vcovHC(fit_time, type = 'HC')
+robust.se_time <- sqrt(diag(cov_time))
+```
+
+With covariates
+```{r}
+fit_time_with_covariates <- lm(time ~ assigned_lyrics + gender + native_english + own_dog + is_turk, dt)
+cov_time_with_covariates <- vcovHC(fit_time_with_covariates, type = 'HC')
+robust.se_time_with_covariates <- sqrt(diag(cov_time_with_covariates))
+```
+
+```{r, results='asis'}
+stargazer(fit_time, fit_time_with_covariates,
+          se=list(robust.se_time, robust.se_time_with_covariates),
+          dep.var.labels=c("time to complete (seconds)"),
+          covariate.labels=c("assigned lyrics","female", "native english speaker","owns dog",
+                             "mechanical turk"),
+          keep.stat="n",type='text')
+```
+
+
+## Power Calculation
+
+```{r}
+# Calculating number of subjects needed for 80% power (BASED ON TIME AS THE OUTCOME)
+
+cohens_d <- function(x, y) {
+    lx <- length(x)- 1
+    ly <- length(y)- 1
+    md  <- abs(mean(x) - mean(y))        ## mean difference (numerator)
+    csd <- lx * var(x) + ly * var(y)
+    csd <- csd/(lx + ly)
+    csd <- sqrt(csd)                     ## common sd computation
+    
+    cd  <- md/csd                        ## cohen's d
+}
+
+(effect_size_time <- cohens_d(dt[assigned_lyrics==1, time], dt[assigned_lyrics==0, time]))
+
+pwr.t.test(power = 0.8, d = effect_size_time, sig.level = 0.05, type = "two.sample")
+```
+
+
+
+```{r}
+# Calculating what power we got for our experiment
+
+(effect_size_correct_count <- cohens_d(dt[assigned_lyrics==1, correct_count], dt[assigned_lyrics==0, correct_count]))
+
+pwr.t2n.test(n1 = 74, n2 = 67, d = effect_size_correct_count, sig.level = 0.05)
+```
+```{r}
+compliance_check=dt[, .N, by = 'heard_lyrics,assigned_lyrics']
+
+alpha=sum(compliance_check$N[compliance_check$heard_lyrics=='Rocket Man' & compliance_check$assigned_lyrics==1],na.rm=TRUE)/sum(compliance_check$N[compliance_check$assigned_lyrics==1])
+print(alpha)
+ITT= -0.032
+CACE=ITT/alpha #85% compliance
+CACE
+```
+
+
+
+```{r}
+dt$heard_lyrics = factor(dt$heard_lyrics, levels=c(levels(dt$heard_lyrics), "Didn't Hear"))
+dt$heard_lyrics[is.na(dt$heard_lyrics)]="Didn't Hear"
+dt$heard_lyrics=ifelse(dt$heard_lyrics=='Rocket Man' & dt$assigned_lyrics==1 ,1,0)
+summary(dt)
+```
+
+```{r}
+m1 <- ivreg(correct_count ~ heard_lyrics|assigned_lyrics , data = dt)
+summary(m1)
+```
+
+```{r}
+m2 <- ivreg(time ~ heard_lyrics|assigned_lyrics , data = dt)
+summary(m2)
+```
+
