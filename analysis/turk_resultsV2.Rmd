@@ -177,8 +177,12 @@ ggsave("treatment_by_education.png")
 ```{r}
 dt[ , chisq.test(assigned_lyrics, age, simulate.p.value = TRUE)]
 dt[ , chisq.test(assigned_lyrics, education, simulate.p.value = TRUE)]
+dt[,chisq.test(assigned_lyrics,gender,simulate.p.value = TRUE)]
 dt[ , t.test(native_english ~ assigned_lyrics)]
 dt[ , t.test(is_turk ~ assigned_lyrics)]
+dt[ , t.test(own_dog ~ assigned_lyrics)]
+dt[ , t.test(native_english ~ assigned_lyrics)]
+
 ```
 
 
@@ -360,7 +364,7 @@ compliance_check=dt[, .N, by = 'heard_lyrics,assigned_lyrics']
 alpha=sum(compliance_check$N[compliance_check$heard_lyrics=='Rocket Man' & compliance_check$assigned_lyrics==1],na.rm=TRUE)/sum(compliance_check$N[compliance_check$assigned_lyrics==1])
 print(alpha)
 ITT= -0.032
-CACE=ITT/alpha #85% compliance
+CACE=ITT/alpha #85% one-sided compliance
 CACE
 ```
 
@@ -370,7 +374,7 @@ CACE
 dt$heard_lyrics = factor(dt$heard_lyrics, levels=c(levels(dt$heard_lyrics), "Didn't Hear"))
 dt$heard_lyrics[is.na(dt$heard_lyrics)]="Didn't Hear"
 dt$heard_lyrics=ifelse(dt$heard_lyrics=='Rocket Man' & dt$assigned_lyrics==1 ,1,0)
-summary(dt)
+summary(dt) #re-assign heard_lyrics such that it serves as contact rate for those treated
 ```
 
 ```{r}
