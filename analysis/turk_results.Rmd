@@ -91,7 +91,7 @@ Gender counts of treatment and control:
 dt[, .N, by = 'assigned_lyrics,gender']
 
 ggplot(data = dt, aes(x = gender, group = lyrics_factor, fill = lyrics_factor)) + 
-  geom_bar() + 
+  geom_bar(position = "dodge") + 
   theme_bw() +
   guides(fill=guide_legend(title="assignment")) +
   labs(
@@ -108,7 +108,7 @@ Most people recognized the song regardless of being assigned lyrics:
 dt[, .N, by = 'heard_lyrics,assigned_lyrics']
 
 ggplot(data = dt, aes(x = heard_lyrics, group = lyrics_factor, fill = lyrics_factor)) + 
-  geom_bar() + 
+  geom_bar(position = "dodge") + 
   theme_bw() +
   guides(fill=guide_legend(title="assignment")) +
   labs(
@@ -152,7 +152,7 @@ table(dt$assigned_lyrics, dt$age)
 # dt[, .N, keyby = 'age,assigned_lyrics']
 
 ggplot(data = dt, aes(x = age, group = lyrics_factor, fill = lyrics_factor)) + 
-  geom_bar() + 
+  geom_bar(position = "dodge") + 
   theme_bw() +
   guides(fill=guide_legend(title="assignment")) +
   labs(
@@ -170,7 +170,7 @@ table(dt$assigned_lyrics, dt$education)
 
 ```{r}
 ggplot(data = dt, aes(x = education, group = lyrics_factor, fill = lyrics_factor)) + 
-  geom_bar() + 
+  geom_bar(position = "dodge") + 
   theme_bw() +
   guides(fill=guide_legend(title="assignment")) +
   labs(
@@ -279,20 +279,47 @@ stargazer(fit_simple, fit_with_covariates,
           covariate.labels=c("assigned lyrics","female", "native english speaker","owns dog","mechanical turk"),
           keep.stat="n")
 ```
-
 ```{r}
-fit_with_education <- lm(correct_count ~ assigned_lyrics + education, dt)
-cov_with_education <- vcovHC(fit_with_education, type = 'HC')
+# Group all non-college subjects together
+was_a_college_kid_once <- function(highest_ed) {
+  ifelse(highest_ed %in% c("none", "8th grade", "some high school", "high school completed", "vocational", "associates"),
+         "no college", highest_ed)
+}
+
+dt[, education_low_ed_grouped := was_a_college_kid_once(education)]
+
+dt[, education2 := factor(education_low_ed_grouped, levels = c('no college', '5',
+                                                              '8', '9', '10'),
+                         labels = c('no college', 'some college', 'bachelors', 'masters', 'doctorate'))]
+
+fit_with_education <- lm(correct_count ~ assigned_lyrics + education2, dt)
+cov_with_education <- vcovHC(fit_with_education)
 robust.se_with_education <- sqrt(diag(cov_with_education))
 ```
+
 
 ```{r, results='asis'}
 stargazer(fit_with_education,
           se=list(robust.se_with_education), 
           dep.var.labels=c("correct answer count"),
-          covariate.labels=c("assigned lyrics","some high school", "high school completed","some college",
-                             "vocational", "associate", "bachelor", "master", "doctorate"),
+          covariate.labels=c("assigned lyrics", "some college", "bachelor", "master", "doctorate"),
           keep.stat="n")
+```
+
+
+```{r}
+# fit_with_education <- lm(correct_count ~ assigned_lyrics + education, dt)
+# cov_with_education <- vcovHC(fit_with_education, type = 'HC')
+# robust.se_with_education <- sqrt(diag(cov_with_education))
+```
+
+```{r, results='asis'}
+# stargazer(fit_with_education,
+#           se=list(robust.se_with_education), 
+#           dep.var.labels=c("correct answer count"),
+#           covariate.labels=c("assigned lyrics","some high school", "high school completed","some college",
+#                              "vocational", "associate", "bachelor", "master", "doctorate"),
+#           keep.stat="n")
 ```
 
 
