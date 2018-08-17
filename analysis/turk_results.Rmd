@@ -106,6 +106,17 @@ ggsave("gender_treatment_assignment.png")
 Most people recognized the song regardless of being assigned lyrics:
 ```{r}
 dt[, .N, by = 'heard_lyrics,assigned_lyrics']
+
+ggplot(data = dt, aes(x = heard_lyrics, group = lyrics_factor, fill = lyrics_factor)) + 
+  geom_bar() + 
+  theme_bw() +
+  guides(fill=guide_legend(title="assignment")) +
+  labs(
+    title = "Post-Quiz Compliance Check Results",
+    x = "responses to 'what did you hear in the music?'",
+    y = "count"
+    )
+ggsave("heard_lyrics_treatment_assignment.png")
 ```
 
 
@@ -353,5 +364,5 @@ pwr.t.test(power = 0.8, d = effect_size_time, sig.level = 0.05, type = "two.samp
 
 (effect_size_correct_count <- cohens_d(dt[assigned_lyrics==1, correct_count], dt[assigned_lyrics==0, correct_count]))
 
-pwr.t2n.test(n1 = 74, n2 = 67, d = effect_size_correct_count, sig.level = 0.05)
+pwr.t2n.test(n1 = 76, n2 = 67, d = effect_size_correct_count, sig.level = 0.05)
 ```
