@@ -307,25 +307,21 @@ stargazer(fit_with_education,
 ```
 
 
-```{r}
-# fit_with_education <- lm(correct_count ~ assigned_lyrics + education, dt)
-# cov_with_education <- vcovHC(fit_with_education, type = 'HC')
-# robust.se_with_education <- sqrt(diag(cov_with_education))
-```
 
 ```{r, results='asis'}
-# stargazer(fit_with_education,
-#           se=list(robust.se_with_education), 
-#           dep.var.labels=c("correct answer count"),
-#           covariate.labels=c("assigned lyrics","some high school", "high school completed","some college",
-#                              "vocational", "associate", "bachelor", "master", "doctorate"),
-#           keep.stat="n")
-```
+# # Group 45+ year old subjects together
+# group_45_and_up <- function(age_group) {
+#   ifelse(age_group %in% c('45-54', '55-64', '65-74', '>75'),
+#          "45_and_up", age_group)
+# }
+# 
+# dt[, age_45_thru_64_grouped := group_45_and_up(age)]
+# 
+# dt[, age2 := factor(age_45_thru_64_grouped, levels = c('2', '3', '4', '5', '45_and_up'),
+#                          labels = c('12-17', '18-24', '25-34', '35-44', '45_and_up'))]
 
-
-```{r, results='asis'}
-fit_with_age <- lm(correct_count ~ assigned_lyrics + age, dt)
-cov_with_age <- vcovHC(fit_with_age, type = 'HC')
+fit_with_age <- lm(correct_count ~ assigned_lyrics + age, dt[age != '12-17'])
+cov_with_age <- vcovHC(fit_with_age)
 robust.se_with_age <- sqrt(diag(cov_with_age))
 ```
 
@@ -333,10 +329,23 @@ robust.se_with_age <- sqrt(diag(cov_with_age))
 stargazer(fit_with_age,
           se=list(robust.se_with_age),
           dep.var.labels=c("correct answer count"),
-          covariate.labels=c("assigned lyrics","ages 18-24", "ages 25-34","ages 35-44",
-                             "ages 45-54", "ages 55-64", "ages 65-74"),
+          covariate.labels=c("assigned lyrics", "ages 25-34","ages 35-44",
+                             "ages 45 and up", "ages 55-64", "ages 65-74"),
           keep.stat="n")
 ```
+
+```{r}
+ggplot(data = dt[is_turk == 1], aes(x = age)) + 
+  geom_bar() + 
+  theme_bw() +
+  labs(
+    title = "Turk by Age",
+    x = "age range",
+    y = "count"
+    )
+ggsave("turk_by_age.png")
+```
+
 
 ## Regression with elapsed time as outcome
 
